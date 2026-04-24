@@ -1,6 +1,5 @@
-# -----------------------------
+
 # S-AES Implementation
-# -----------------------------
 
 # S-Box and Inverse S-Box
 SBOX = {
@@ -16,9 +15,8 @@ RCON1 = 0b10000000
 RCON2 = 0b00110000
 
 
-# -----------------------------
+
 # Helper Functions
-# -----------------------------
 
 def sub_nib(byte):
     left = (byte >> 4) & 0xF
@@ -49,9 +47,7 @@ def nibbles_to_int(n):
     return (n[0] << 12) | (n[1] << 8) | (n[2] << 4) | n[3]
 
 
-# -----------------------------
 # Galois Field Multiplication
-# -----------------------------
 
 def gmul(a, b):
     p = 0
@@ -66,9 +62,8 @@ def gmul(a, b):
     return p & 0xF
 
 
-# -----------------------------
+
 # Core Transformations
-# -----------------------------
 
 def sub_nibbles(state):
     return [SBOX[n] for n in state]
@@ -83,7 +78,7 @@ def shift_rows(state):
 
 
 def inv_shift_rows(state):
-    return [state[0], state[1], state[3], state[2]]  # same for 2x2
+    return [state[0], state[1], state[3], state[2]] 
 
 
 def mix_columns(state):
@@ -104,9 +99,8 @@ def inv_mix_columns(state):
     ]
 
 
-# -----------------------------
+
 # Key Expansion
-# -----------------------------
 
 def key_expansion(key):
     w0 = (key >> 8) & 0xFF
@@ -125,9 +119,7 @@ def key_expansion(key):
     return K0, K1, K2
 
 
-# -----------------------------
 # Encryption
-# -----------------------------
 
 def encrypt(plaintext, key):
     K0, K1, K2 = key_expansion(key)
@@ -151,9 +143,7 @@ def encrypt(plaintext, key):
     return state
 
 
-# -----------------------------
 # Decryption
-# -----------------------------
 
 def decrypt(ciphertext, key):
     K0, K1, K2 = key_expansion(key)
@@ -177,9 +167,8 @@ def decrypt(ciphertext, key):
     return state
 
 
-# -----------------------------
-# TEST
-# -----------------------------
+
+# Test
 if __name__ == "__main__":
     P = 0b1101011100101000
     K = 0b0100101011110101

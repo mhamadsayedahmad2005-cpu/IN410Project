@@ -5,9 +5,8 @@ k1 = 66
 k2 = 99
 
 
-# -----------------------------
+
 # Helper functions
-# -----------------------------
 
 def xor(a: int, b: int) -> int:
     return a ^ b
@@ -42,12 +41,6 @@ def format_blocks_hex(blocks):
 
 
 def parse_ciphertext(cipher_str: str):
-    """
-    Accepts:
-      1) Decimal list: 12345, 54321, 999
-      2) Hex list: 0x1234, 0xABCD
-      3) Mixed whitespace / commas
-    """
     cipher_str = cipher_str.strip()
     if not cipher_str:
         return []
@@ -66,9 +59,8 @@ def parse_ciphertext(cipher_str: str):
     return blocks
 
 
-# -----------------------------
+
 # XTS Encryption
-# -----------------------------
 
 def xts_encrypt(text: str, K1: int = k1, K2: int = k2):
     blocks = split_blocks(text)
@@ -84,9 +76,8 @@ def xts_encrypt(text: str, K1: int = k1, K2: int = k2):
     return ciphertext
 
 
-# -----------------------------
+
 # XTS Decryption
-# -----------------------------
 
 def xts_decrypt(cipher_blocks, K1: int = k1, K2: int = k2):
     plaintext_blocks = []
@@ -101,51 +92,56 @@ def xts_decrypt(cipher_blocks, K1: int = k1, K2: int = k2):
     return blocks_to_text(plaintext_blocks)
 
 
-# -----------------------------
-# Demo / Interactive mode
-# -----------------------------
+
+# MAIN MENU
 
 if __name__ == "__main__":
-    print("Using fixed keys:")
+    print("=== XTS Mode ===")
+    print("Keys used:")
     print("k1 =", k1)
     print("k2 =", k2)
 
     print("\nChoose mode:")
-    print("1. Encrypt plaintext")
-    print("2. Decrypt ciphertext")
+    print("1. Encrypt")
+    print("2. Decrypt")
+
     choice = input("Enter 1 or 2: ").strip()
 
+    #Encrypt
     if choice == "1":
         plaintext = input("Enter plaintext: ")
         cipher = xts_encrypt(plaintext)
 
         print("\n--- Encryption Result ---")
-        print("Plaintext :", plaintext)
-        print("Ciphertext (decimal):", format_blocks_decimal(cipher))
-        print("Ciphertext (hex)    :", format_blocks_hex(cipher))
+        print("Plaintext            :", plaintext)
+        print("Ciphertext (decimal) :", format_blocks_decimal(cipher))
+        print("Ciphertext (hex)     :", format_blocks_hex(cipher))
 
+        # Optional check
         recovered = xts_decrypt(cipher)
-        print("Decrypted check     :", recovered)
+        print("Decrypted check      :", recovered)
 
+    # Decrypt
     elif choice == "2":
         cipher_input = input(
             "Enter ciphertext blocks\n"
             "Examples:\n"
-            "  12345, 54321, 9999\n"
-            "  0x1A2B, 0x00FF, 0xABCD\n"
+            "  12345, 54321\n"
+            "  0x1A2B, 0x00FF\n"
             "> "
         )
 
         try:
             cipher_blocks = parse_ciphertext(cipher_input)
-            decrypted = xts_decrypt(cipher_blocks)
+            plaintext = xts_decrypt(cipher_blocks)
 
             print("\n--- Decryption Result ---")
-            print("Ciphertext:", cipher_blocks)
-            print("Decrypted :", decrypted)
+            print("Ciphertext (decimal) :", format_blocks_decimal(cipher_blocks))
+            print("Ciphertext (hex)     :", format_blocks_hex(cipher_blocks))
+            print("Plaintext            :", plaintext)
 
         except ValueError as e:
-            print(f"Invalid ciphertext format: {e}")
+            print("Error:", e)
 
     else:
         print("Invalid choice.")
